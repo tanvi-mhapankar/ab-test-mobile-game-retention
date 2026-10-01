@@ -1,3 +1,6 @@
+# Setup: download cookie_cats.csv from Kaggle into the same folder as this script
+# Packages: install.packages(c("DBI", "RSQLite", "ggplot2", "scales"))
+
 # Cookie Cats A/B Test: Should the first gate move from level 30 to level 40?
 library(DBI)
 library(RSQLite)
@@ -36,7 +39,13 @@ outliers <- dbGetQuery(con, "
   LIMIT 5
 ")
 print(outliers)
-# Decide: does one extreme player affect the comparison? Retention is yes/no per player, so the test below is not very sensitive to it.
+# Average rounds without the extreme outlier
+print(mean(df$sum_gamerounds[df$version == "gate_30" & df$sum_gamerounds < 10000]))
+print(mean(df$sum_gamerounds[df$version == "gate_40"]))
+
+# Check group sizes against a 50/50 split
+print(chisq.test(table(df$version), p = c(0.5, 0.5)))
+# Decide: does one extreme player affect the comparison? # One extreme player doesn't affect retention (yes/no per player), but it inflates average rounds in gate_30
 
 # ---- 4. Test: is the difference in retention statistically significant? ----
 compare <- function(metric) {
@@ -55,28 +64,9 @@ p7 <- compare("retention_7")
 
 # ---- 5. Multiple comparisons: we tested 2 metrics, so use a Bonferroni-adjusted
 # threshold of 0.05 / 2 = 0.025 instead of 0.05. ----
-alpha <- 0.05 / 
+alpha <- 0.05 / 2
 cat("1-day significant at adjusted alpha?", p1 < alpha, "\n")
 cat("7-day significant at adjusted alpha?", p7 < alpha, "\n")
-
-# ---- 6. Chart: retention by version with 95% confidence intervals ----
-rows <- list()
-for (metric in c("retention_1", "retention_7")) {
-  for (v in c("gate_30", "gate_40")) {
-    x <- df[df$version == v, metric]
-    ci <- prop.test(sum(x), length(x), correct = FALSE)$conf.int
-    rows[[length(rows) + 1]] <- data.frame(metric = metric, version = v,
-                                           rate = mean(x), lo = ci[1], hi = ci[2])
-  }
-}
-plot_df <- do.call(rbind, rows)
-
-p <- ggplot(plot_df, aes(metric, rate, color = version)) +
-  geom_pointrange(aes(ymin = lo, ymax = hi), position = position_dodge(width = 0.3)) +
-  scale_x_discrete(labels = c("1-day retention", "7-day retention")) +
-  labs(x = NULL, y = "Share of players retained", title = "Retention by gate position")
-ggsave("retention_chart.png", p, width = 6, height = 4, dpi = 150)
-print(p)
 
 metric_labels <- c(retention_1 = "1-day retention", retention_7 = "7-day retention")
 
