@@ -1,0 +1,5 @@
+library(DBI)
+library(RSQLite)
+library(ggplot2)
+df <- read.csv("cookie_cats.csv")
+str(df)
