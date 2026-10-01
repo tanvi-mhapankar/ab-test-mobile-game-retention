@@ -32,7 +32,6 @@ Cookie Cats is a "connect three" puzzle game. As players progress, they hit *gat
 |---|---|---|---|---|---|
 | 1-day retention | 44.82% | 44.23% | −0.59 pp | (−1.24, +0.06) | 0.074 |
 | 7-day retention | 19.02% | 18.20% | −0.82 pp | (−1.33, −0.31) | 0.0016 |
-|
 Group sizes: 44,700 (gate_30) vs 45,489 (gate_40). A chi-squared test against a 50/50 split gave p = 0.0086. The imbalance is under 1%, but it is slightly larger than chance alone would predict, and I can't verify how players were assigned.
 
 ![Retention by gate position](retention_chart.png)
