@@ -11,15 +11,14 @@ Keep the first gate at level 30. Moving it to level 40 did not improve retention
 
 ## Background
 
-- Cookie Cats is a "connect three" puzzle game. As players progress, they hit gates that force them to wait or pay to continue. When players installed the game, (according to the dataset description), players were randomly assigned to one of two versions when they installed the game
-- gate_30: first gate at level 30 (the original)
-- gate_40: first gate moved to level 40
+Cookie Cats is a "connect three" puzzle game. As players progress, they hit *gates* that force them to wait or pay to continue. According to the dataset description, players were randomly assigned to one of two versions when they installed the game:
 
-## Question: 
-Does moving the gate to level 40 change player retention?
+- **gate_30:** first gate at level 30 (the original)
+- **gate_40:** first gate moved to level 40
 
-## Data: 
-Mobile Games A/B Testing – Cookie Cats (Kaggle). 90,189 players, with game rounds played in the first 14 days and whether each player returned 1 day and 7 days after install. The data file is not included in this repo; download it from the link above and save it as cookie_cats.csv.
+**Question:** Does moving the gate to level 40 change player retention?
+
+**Data:** [Mobile Games A/B Testing – Cookie Cats (Kaggle)](https://www.kaggle.com/datasets/mursideyarkin/mobile-games-ab-testing-cookie-cats). 90,189 players, with game rounds played in the first 14 days and whether each player returned 1 day and 7 days after install. The data file is not included in this repo; download it from the link above and save it as `cookie_cats.csv`.
 
 ## Methods
 1. Checked the data for missing values and loaded it into an in-memory SQL database to compute group sizes, retention rates, and average game rounds.
@@ -29,12 +28,12 @@ Mobile Games A/B Testing – Cookie Cats (Kaggle). 90,189 players, with game rou
 5. Checked whether the group sizes were consistent with a 50/50 split.
 
 ## Results
-- Metric	gate_30	gate_40	Difference	95% CI	p-value
-- 1-day retention	44.82%	44.23%	−0.59 pp	(−1.24, +0.06)	0.074
-- 7-day retention	19.02%	18.20%	−0.82 pp	(−1.33, −0.31)	0.0016
-- 1-day retention: the difference is not statistically significant.
-- 7-day retention: the difference is significant, even at the adjusted threshold of 0.025. It is about a 4% relative drop.
-- Group sizes: 44,700 (gate_30) vs 45,489 (gate_40). A chi-squared test against a 50/50 split gave p = 0.0086. The imbalance is under 1%, but it is slightly larger than chance alone would predict, and I can't verify how players were assigned.
+| Metric | gate_30 | gate_40 | Difference | 95% CI | p-value |
+|---|---|---|---|---|---|
+| 1-day retention | 44.82% | 44.23% | −0.59 pp | (−1.24, +0.06) | 0.074 |
+| 7-day retention | 19.02% | 18.20% | −0.82 pp | (−1.33, −0.31) | 0.0016 |
+|
+Group sizes: 44,700 (gate_30) vs 45,489 (gate_40). A chi-squared test against a 50/50 split gave p = 0.0086. The imbalance is under 1%, but it is slightly larger than chance alone would predict, and I can't verify how players were assigned.
 
 ![Retention by gate position](retention_chart.png)
 
